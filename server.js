@@ -22,12 +22,12 @@ const db = mysql.createConnection(
 );
 
 // adds the starting question prompt
-function intialChoices() {
+function initialChoices() {
     inquirer.prompt({
-        name: 'choices',
+        name: 'action',
         type: 'list',
         message: 'What would you like to do?',
-        choices: ['View all employees', 'Add employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department']
+        choices: ['View all Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add a Role', 'View All Departments', 'Add Departments']
     })
     // depending on how the user responds, this will take them to the choice they made
     .then(({ action }) => {
@@ -41,13 +41,13 @@ function intialChoices() {
             case 'Update Employee Role':
                 updateEmployeeRole();
                 break;
-            case 'View all Roles':
+            case 'View All Roles':
                 viewRoles();
                 break;
             case 'Add a Role':
                 addRole();
                 break;
-            case 'View all Departments':
+            case 'View All Departments':
                 viewDepartments();
                 break;
             case 'Add Departments':
@@ -60,22 +60,44 @@ function intialChoices() {
 
 function viewEmployees() {
     console.log('Viewing all employees');
-    let query = 'SELECT * FROM;';
+    let query = 'SELECT * FROM employee';
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
-        intialChoices();
+        initialChoices();
     });
 };
 
-function addEmployee() {
-    console.log('Viewing all employees');
-    let query = 'SELECT * FROM;';
-    db.query(query, (err, row) => {
-        if (err) throw (err);
-        console.table(row);
-        intialChoices();
-    });
+async function addEmployee() {
+    const roles = await db.promise().query("SELECT id AS value, title AS name FROM role")
+    const managers = await db.promise().query("SELECT id AS value, last_name AS name FROM employee")
+    const prompts = await inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the employee's first name?",
+            name: "first_name"
+        },
+        {
+            type: "input",
+            message: "What is the employee's last name?",
+            name: "last_name"
+        },
+        {
+            type: "list",
+            message: "Choose the role of the employee",
+            name: "role_id",
+            choices: roles[0]
+        },
+        {
+            type: "list",
+            message: "Choose the manager of the employee",
+            name: "manager_id",
+            choices: managers[0]
+        }
+    ])
+    const db_entry = await db.promise().query("INSERT into employee SET ?", prompts)
+    console.log("Employee Added!")
+    initialChoices();
 };
 
 function updateEmployeeRole() {
@@ -84,13 +106,13 @@ function updateEmployeeRole() {
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
-        intialChoices();
+        initialChoices();
     });
 };
 
 function viewRoles() {
-    console.log('Viewing all employees');
-    let query = 'SELECT * FROM;';
+    console.log('Viewing all roles');
+    let query = 'SELECT * FROM role;';
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
@@ -109,18 +131,8 @@ function addRole() {
 };
 
 function viewDepartments() {
-    console.log('Viewing all employees');
-    let query = 'SELECT * FROM;';
-    db.query(query, (err, row) => {
-        if (err) throw (err);
-        console.table(row);
-        intialChoices();
-    });
-};
-
-function viewEmployees() {
-    console.log('Viewing all employees');
-    let query = 'SELECT * FROM;';
+    console.log('Viewing all departments');
+    let query = 'SELECT * FROM department;';
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
@@ -137,3 +149,5 @@ function addDepartment() {
         intialChoices();
     });
 };
+
+initialChoices();

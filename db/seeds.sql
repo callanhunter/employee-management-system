@@ -3,7 +3,7 @@ INSERT INTO department (name)
 VALUES ("Sales"),
        ("Engineering"),
        ("Finance"),
-       ("Legal"),
+       ("Legal");
 
 -- inserts data into role table
 INSERT INTO role (title, salary, department_id)
