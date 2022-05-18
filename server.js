@@ -100,6 +100,69 @@ async function addEmployee() {
     initialChoices();
 };
 
+
+
+
+async function addDepartment() {
+    const department = await db.promise().query("INSERT INTO departments (name) VALUES (?)")
+    const prompts = await inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the name of the Department",
+            name: "newDepartment"
+        },
+    ])
+    const db_entry = await db.promise().query("INSERT into department SET ?", prompts)
+    console.log("Department Added!")
+    initialChoices();
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function addRole() {
+    const roles = await db.promise().query("SELECT id AS value, title AS name FROM role")
+    const managers = await db.promise().query("SELECT id AS value, last_name AS name FROM employee")
+    const prompts = await inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the employee's first name?",
+            name: "first_name"
+        },
+        {
+            type: "input",
+            message: "What is the employee's last name?",
+            name: "last_name"
+        },
+        {
+            type: "list",
+            message: "Choose the role of the employee",
+            name: "role_id",
+            choices: roles[0]
+        },
+        {
+            type: "list",
+            message: "Choose the manager of the employee",
+            name: "manager_id",
+            choices: managers[0]
+        }
+    ])
+    const db_entry = await db.promise().query("INSERT into employee SET ?", prompts)
+    console.log("Employee Added!")
+    initialChoices();
+};
+
 function updateEmployeeRole() {
     console.log('Viewing all employees');
     let query = 'SELECT * FROM;';
@@ -116,7 +179,7 @@ function viewRoles() {
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
-        intialChoices();
+        initialChoices();
     });
 };
 
@@ -126,7 +189,7 @@ function addRole() {
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
-        intialChoices();
+        initialChoices();
     });
 };
 
@@ -136,7 +199,7 @@ function viewDepartments() {
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
-        intialChoices();
+        initialChoices();
     });
 };
 
@@ -146,7 +209,7 @@ function addDepartment() {
     db.query(query, (err, row) => {
         if (err) throw (err);
         console.table(row);
-        intialChoices();
+        initialChoices();
     });
 };
 
