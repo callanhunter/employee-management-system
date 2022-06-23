@@ -4,7 +4,7 @@
 
 # Description
 
-### This project is designed to make it easy to view and add/view employess, add/view roles, and add/view departments. The employee's salary and manager is also available to view
+### This project is designed to make it easy to view and add/view employess, add/view roles, and view departments. The employee's salary and manager is also available to view
 
 # Table of contents
 
